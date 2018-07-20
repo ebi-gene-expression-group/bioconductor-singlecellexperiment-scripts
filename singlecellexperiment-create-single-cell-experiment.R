@@ -3,12 +3,7 @@
 # Load optparse we need to check inputs
 
 suppressPackageStartupMessages(require(optparse))
-
-# Source common functions
-
-ca <- commandArgs()
-script_dir <- dirname(sub('--file=', '', ca[grep('--file', ca)]))
-source(file.path(script_dir, 'bioconductor-singlecellexperiment-scripts-accessory.R'))
+suppressPackageStartupMessages(require(workflowscriptscommon))
 
 # parse options
 
@@ -50,11 +45,12 @@ option_list = list(
   )
 )
 
-opt <- rsw_parse_args(option_list, mandatory = c('assays', 'output_object_file'))
+opt <- wsc_parse_args(option_list, mandatory = c('assays', 'output_object_file'))
 
 # Check parameter values
 
-assayfiles <- unlist(strsplit(opt$assays, ','))
+assayfiles <- wsc_split_string(opt$assays)
+  
 for (af in assayfiles){
   if ( ! file.exists(af) ){
     stop(paste('File', af, 'does not exist'))
