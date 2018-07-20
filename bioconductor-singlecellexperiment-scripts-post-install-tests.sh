@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bats
+
+script_dir=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+script_name=$0
 
 # This is a test script designed to test that everything works in the various
 # accessory scripts in this package. Parameters used have absolutely NO
@@ -6,7 +9,7 @@
 # parameterisation for a workflow.
 
 function usage {
-    echo "usage: `basename "$0"` [action] [use_existing_outputs]"
+    echo "usage: $script_name [action] [use_existing_outputs]"
     echo "  - action: what action to take, 'test' or 'clean'"
     echo "  - use_existing_outputs, 'true' or 'false'"
     exit 1
@@ -29,8 +32,8 @@ test_matrix_url="https://raw.githubusercontent.com/jdblischak/singleCellSeq/mast
 test_annotation_url="https://raw.githubusercontent.com/jdblischak/singleCellSeq/master/data/annotation.txt"
 
 test_working_dir=`pwd`/'post_install_tests'
-test_matrix_file=$test_working_dir/test_data/`basename $test_matrix_url`
-test_annotation_file=$test_working_dir/test_data/`basename $test_annotation_url`
+export test_matrix_file=$test_working_dir/test_data/`basename $test_matrix_url`
+export test_annotation_file=$test_working_dir/test_data/`basename $test_annotation_url`
 
 # Clean up if specified
 
@@ -52,57 +55,20 @@ mkdir -p $test_working_dir
 mkdir -p $output_dir
 mkdir -p $data_dir
 
-cd $test_working_dir
-
 ################################################################################
 # Fetch test data 
 ################################################################################
 
 if [ ! -e "$test_matrix_file" ]; then
-    mkdir -p test_data
-    wget $test_matrix_url -P test_data
-    wget $test_annotation_url -P test_data
+    wget $test_matrix_url -P $data_dir
+    wget $test_annotation_url -P $data_dir
 fi
-
-################################################################################
-# Accessory functions
-################################################################################
-
-function report_status() {
-    script=$1
-    status=$2
-
-    if [ $status -ne 0 ]; then
-        echo "FAIL: $script"
-        exit 1
-    else
-        echo "SUCCESS: $script"
-    fi
-}
-
-# Run a command, checking the primary output depending on the value of
-# 'use_existing_outputs'
-
-run_command() {
-    command=$1
-    test_output=$2
-
-    echo "$command"
-    command_name=`echo "$command" | awk '{print $1}'`
-
-    if [ -e "$test_output" ] && [ "$use_existing_outputs" == "true" ]; then
-        echo "Using cached output for $command_name"
-    else
-        eval $command
-        report_status $command_name $?
-    fi
-}
 
 ################################################################################
 # List tool outputs/ inputs
 ################################################################################
 
-raw_singlecellexperiment_object="$output_dir/raw_sce.rds"
+export raw_singlecellexperiment_object="$output_dir/raw_sce.rds"
 
 ## Test parameters- would form config file in real workflow. DO NOT use these
 ## as default values without being sure what they mean.
@@ -112,13 +78,15 @@ raw_singlecellexperiment_object="$output_dir/raw_sce.rds"
 # Test individual scripts
 ################################################################################
 
-# Create raw object
+# Make the script options available to the tests so we can skip tests e.g.
+# where one of a chain has completed successfullly.
 
-run_command "singlecellexperiment-create-single-cell-experiment.R -a $test_matrix_file -c $test_annotation_file -o $raw_singlecellexperiment_object" $raw_singlecellexperiment_object
+export use_existing_outputs
 
-################################################################################
-# Finish up
-################################################################################
+# Derive the tests file name from the script name
 
-echo "All tests passed"
-exit 0
+tests_file="${script_name%.*}".bats
+
+# Execute the bats tests
+
+$tests_file
