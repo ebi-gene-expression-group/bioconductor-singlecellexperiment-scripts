@@ -4,21 +4,42 @@ SingleCellExperiment is a base data structure for single cell analyses, in parti
 
 ## Install
 
-You can just download and use the wrappers here as we develop them. But We are intending for these scripts to be available alongside the SingleCellExperiment package in Bioconda. Prior to our finalising a version of this package and making it available through usual channels, it is available from our fork of the bioconda recipes using the commands below. Here we are assuming you have a healthy Bioconda install with the correct channels activate (see https://bioconda.github.io/index.html#set-up-channels). 
+The recommended method for script installation is via a Bioconda recipe called bioconda-singlecellexperiment-scripts. 
 
-You may need to install conda-build:
-
-```
-conda install conda-build
-```
-
-Now you should be able to install using the following command:
+With the [Bioconda channels](https://bioconda.github.io/#set-up-channels) configured the latest release version of the package can be installed via the regular conda install command:
 
 ```
-cd <directory where you do your Git clones>
-git clone git@github.com:ebi-gene-expression-group/bioconda-recipes.git
-git checkout bioconductor-singlecellexperiment-scripts
-cd bioconda-recipes/recipes/bioconductor-singlecellexperiment-scripts
-conda build .
-conda install --force --use-local bioconductor-singlecellexperiment-scripts
+conda install bioconductor-singlecellexperiment-scripts
 ```
+
+## Test installation
+
+There is a test script included:
+
+```
+bioconductor-singlecellexperiment-scripts-post-install-tests.sh
+```
+
+This downloads test data and executes all of the scripts described below.
+
+## Commands
+
+Currently available scripts are detailed below, each of which has usage instructions available via --help.
+
+### singlecellexperiment-create-single-cell-experiment.R: call SingleCellExperiment()
+
+To create a SingleCellExperiment from input files
+
+```
+singlecellexperiment-create-single-cell-experiment.R -a <test matrix file> -c <test annotation file> -o <file to store serialized SingleCellExperiment object>   
+```
+
+### scater-get-random-genes.R 
+
+This script is used to generate random subsets of feature names from a SingleCellExperiment object. It is called like:
+
+```
+singlecellexperiment-get-random-genes.R -i <input SingleCellExperiment in .rds format> -o <output file> -n <numbe of features> -s <random seed>
+```
+
+Output is a text file with one feature per line.
