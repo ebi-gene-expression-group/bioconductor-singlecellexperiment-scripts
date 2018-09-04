@@ -17,12 +17,11 @@ install:
     - conda info -a
 
     # Add the Bioconda channel
-  
     - conda config --add channels defaults
     - conda config --add channels conda-forge
     - conda config --add channels bioconda
 
-    # Replace dep1 dep2 ... with your dependencies
+    # Create the environment with dependencies
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-workflowscriptscommon bioconductor-singlecellexperiment
     - source activate test-environment
 
