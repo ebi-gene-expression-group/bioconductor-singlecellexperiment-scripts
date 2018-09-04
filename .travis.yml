@@ -1,3 +1,11 @@
+
+addons:
+    apt:
+        sources:
+            - r-packages-precise
+        packages:
+            - r-base-dev	
+            - r-recommended    
 before_script:
     - export PATH=`pwd`:$PATH
 script: ./bioconductor-singlecellexperiment-scripts-post-install-tests.sh
