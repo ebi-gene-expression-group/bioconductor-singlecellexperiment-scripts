@@ -23,7 +23,7 @@ install:
     - conda config --add channels bioconda
 
     # Replace dep1 dep2 ... with your dependencies
-    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-workflowscriptscommon bioconda-singlecellexperiment
+    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION r-base r-optparse r-workflowscriptscommon bioconductor-singlecellexperiment
     - source activate test-environment
 
 before_script:
