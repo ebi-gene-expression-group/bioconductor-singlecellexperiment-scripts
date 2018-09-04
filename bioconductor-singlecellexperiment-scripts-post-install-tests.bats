@@ -10,3 +10,15 @@
     [ "$status" -eq 0 ]
     [ -f  "$raw_singlecellexperiment_object" ]
 }
+
+
+@test "Generate a random gene selection" {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$random_genes_file" ]; then
+        skip "$use_existing_outputs $random_genes_file exists and use_existing_outputs is set to 'true'"
+    fi
+
+    run rm -f $random_genes_file && singlecellexperiment-get-random-genes.R -i $raw_singlecellexperiment_object -o $random_genes_file -n $n_random_genes
+
+    [ "$status" -eq 0 ]
+    [ -f  "$random_genes_file" ]
+}
