@@ -1,0 +1,2 @@
+language: R
+script: ./bioconductor-singlecellexperiment-scripts-post-install-tests.sh
