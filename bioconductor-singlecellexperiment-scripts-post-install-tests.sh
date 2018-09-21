@@ -70,11 +70,13 @@ fi
 
 export raw_singlecellexperiment_object="$output_dir/raw_sce.rds"
 export random_genes_file="$output_dir/random_genes.txt"
+export random_cells_file="$output_dir/random_cells.txt"
 
 ## Test parameters- would form config file in real workflow. DO NOT use these
 ## as default values without being sure what they mean.
 
 export n_random_genes=20
+export n_random_cells=100
 
 ################################################################################
 # Test individual scripts

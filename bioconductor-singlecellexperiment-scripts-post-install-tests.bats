@@ -29,3 +29,18 @@
     [ "$status" -eq 0 ]
     [ -f  "$random_genes_file" ]
 }
+
+# Select cell names randomly from the columns of a SingleCellExperiment
+
+@test "Generate a random cell selection" {
+    if [ "$use_existing_outputs" = 'true' ] && [ -f "$random_cells_file" ]; then
+        skip "$use_existing_outputs $random_cells_file exists and use_existing_outputs is set to 'true'"
+    fi
+
+    run rm -f $random_cells_file && singlecellexperiment-get-random-cells.R -i $raw_singlecellexperiment_object -o $random_cells_file -n $n_random_cells
+    echo "status = ${status}"
+    echo "output = ${output}"
+
+    [ "$status" -eq 0 ]
+    [ -f  "$random_cells_file" ]
+}
