@@ -16,6 +16,13 @@ option_list = list(
     help = "Comma-separated list of file names specifying tsv-format matrices. All elements of the list must have the same dimensions, and dimension names (if present) must be consistent across elements and with the row names of rowRanges and colData. The first column of all files is assumed to be feature names."
   ),
   make_option(
+    c("-n", "--assay-names"),
+    action = "store",
+    default = 'counts',
+    type = 'character',
+    help = "Comma-separated list of assay names. If this is not specified, and only a single assay is provided, this will be 'counts'. Otherwise assay names will be derived from input files"
+  ),
+  make_option(
     c("-r", "--row-data"),
     action = "store",
     default = NULL,
@@ -65,6 +72,15 @@ suppressPackageStartupMessages(require(SingleCellExperiment))
 
 assays <- lapply(assayfiles, read.delim, row.names = 1)
 assays <- lapply(assays, as.matrix)
+
+# Name the assays
+
+assaynames <- wsc_split_string(opt$assay_names)
+if (length(assays) == length(assaynames)){
+    names(assays) <- assaynames
+}else{
+    names(assays) <- unlist(lapply(assayfiles, function(x) sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(x))))
+}
 
 # Read row and column annotations
 
